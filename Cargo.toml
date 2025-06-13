@@ -13,6 +13,6 @@ version = "0.0.0+replaced-by-ci"
 
 [workspace.dependencies]
 extism = { path = "./runtime", version = "0.0.0+replaced-by-ci" }
-extism-convert = { path = "./convert", version = "0.0.0+replaced-by-ci" }
+extism-convert = { path = "./convert", version = "0.0.0+replaced-by-ci", default-features = false }
 extism-convert-macros = { path = "./convert-macros", version = "0.0.0+replaced-by-ci" }
 extism-manifest = { path = "./manifest", version = "0.0.0+replaced-by-ci" }

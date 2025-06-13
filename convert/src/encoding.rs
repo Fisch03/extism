@@ -1,5 +1,6 @@
 use crate::*;
 
+#[cfg(feature = "base64")]
 use base64::Engine;
 
 /// The `encoding` macro can be used to create newtypes that implement a particular encoding for the
@@ -50,11 +51,13 @@ macro_rules! encoding {
     };
 }
 
+#[cfg(feature = "json")]
 encoding!(pub Json, serde_json::to_vec, serde_json::from_slice);
 
 #[cfg(feature = "msgpack")]
 encoding!(pub Msgpack, rmp_serde::to_vec, rmp_serde::from_slice);
 
+#[cfg(feature = "json")]
 impl ToBytes<'_> for serde_json::Value {
     type Bytes = Vec<u8>;
 
@@ -63,6 +66,7 @@ impl ToBytes<'_> for serde_json::Value {
     }
 }
 
+#[cfg(feature = "json")]
 impl FromBytesOwned for serde_json::Value {
     fn from_bytes_owned(data: &[u8]) -> Result<Self, Error> {
         Ok(serde_json::from_slice(data)?)
@@ -76,15 +80,18 @@ impl FromBytesOwned for serde_json::Value {
 ///
 /// A value wrapped in `Base64` will automatically be encoded/decoded using base64, the inner value should not
 /// already be base64 encoded.
+#[cfg(feature = "base64")]
 #[derive(Debug)]
 pub struct Base64<T: AsRef<[u8]>>(pub T);
 
+#[cfg(feature = "base64")]
 impl<T: AsRef<[u8]>> From<T> for Base64<T> {
     fn from(data: T) -> Self {
         Self(data)
     }
 }
 
+#[cfg(feature = "base64")]
 impl<T: AsRef<[u8]>> ToBytes<'_> for Base64<T> {
     type Bytes = String;
 
@@ -93,6 +100,7 @@ impl<T: AsRef<[u8]>> ToBytes<'_> for Base64<T> {
     }
 }
 
+#[cfg(feature = "base64")]
 impl FromBytesOwned for Base64<Vec<u8>> {
     fn from_bytes_owned(data: &[u8]) -> Result<Self, Error> {
         Ok(Base64(
@@ -101,6 +109,7 @@ impl FromBytesOwned for Base64<Vec<u8>> {
     }
 }
 
+#[cfg(feature = "base64")]
 impl FromBytesOwned for Base64<String> {
     fn from_bytes_owned(data: &[u8]) -> Result<Self, Error> {
         Ok(Base64(String::from_utf8(

@@ -16,7 +16,11 @@ mod from_bytes;
 mod memory_handle;
 mod to_bytes;
 
-pub use encoding::{Base64, Json};
+#[cfg(feature = "json")]
+pub use encoding::Json;
+
+#[cfg(feature = "base64")]
+pub use encoding::Base64;
 
 #[cfg(feature = "msgpack")]
 pub use encoding::Msgpack;
